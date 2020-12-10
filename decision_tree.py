@@ -2,18 +2,6 @@ import numpy as np
 from binarytree import build
 import re
 
-""" def convert(table):
-    for row in range(len(table)):
-        if table[row] == 1:
-            table[row] = True
-        elif table[row] == 0:
-            table[row] = False
-        elif table[row] == True:
-            table[row] = 1
-        elif table[row] == False:
-            table[row] = 0
-    return table """
-
 
 class DecisionTree:
     function = ""
@@ -21,22 +9,22 @@ class DecisionTree:
     decision_table = []
     result = []
 
+    # constructor which first sets the needed depth and then creates everything need for the tree
     def __init__(self, depth, function):
         self.depth = depth
         self.create_function(function)
-        self.decisionTable()
+        self.decision_table()
         self.calculate()
 
+    # negates the given variable
     def n(self, a):
-        if a == True:
-            return False
-        elif a == False:
-            return True
         if a == 1:
             return 0
         elif a == 0:
             return 1
 
+    # creates tree from the given depth and the calculated result
+    # sadly the package used only allows integers as node names
     def create_tree(self):
         base_tree = []
         for x in range(0, self.depth):
@@ -45,30 +33,34 @@ class DecisionTree:
                 base_tree.append(x + 1)
         base_tree.extend(self.result)
         tree = build(base_tree)
-        print(tree)
+        return tree
 
+    # prints the tree to stdout
+    def print_tree(self):
+        print(self.create_tree())
+
+    # saves tree to specified file and overwrites everything already in it
+    def save_tree(self, filename):
+        if filename:
+            with open(filename, mode="w") as file:
+                file.write(str(self.create_tree()))
+
+    # prepares the given function for eval()
     def create_function(self, function):
         dic = {x: chr(x + 97) for x in range(0, 26)}
-        print(function)
         for item in dic:
             function = function.replace(dic[item], "INPUT[" + str(item) + "]")
         function = re.sub("(INPUT\[[0-9]\]')", "self.n(\\1)", function)
         function = function.replace("'", "").replace("+", " | ").replace("*", " & ")
-        print(function)
         self.function = function
 
+    # returns the calculated row
+    # eval is used which is a dangerous function with the wrong input
     def evaluate_function(self, INPUT):
         return eval(self.function)
 
-    def half(self, length):
-        arr = []
-        for i in range(round(length / 2)):
-            arr.append(1)
-        for i in range(round(length / 2)):
-            arr.append(0)
-        return arr
-
-    def decisionTable(self):
+    # creates the decisiontable with the specified depth as number of inputs
+    def decision_table(self):
         arr = []
         x = 1
         p = 2.0 ** self.depth
@@ -77,18 +69,33 @@ class DecisionTree:
                 arr.extend(self.half(p))
             p = p / 2.0
             x *= 2
-        # arr.reverse()
         array = np.reshape(arr, (self.depth, 2 ** self.depth))
-        print(array.T)
         self.decision_table = array.T
 
+    # helper function for decisiontable
+    def half(self, length):
+        arr = []
+        for i in range(round(length / 2)):
+            arr.append(1)
+        for i in range(round(length / 2)):
+            arr.append(0)
+        return arr
+
+    # calls evaluate_function() for every row of the decisiontable
     def calculate(self):
         arr = []
         for row in self.decision_table:
             arr.append(self.evaluate_function(row))
-        print(arr)
         self.result = arr
 
 
-t = DecisionTree(2, "a+b'")
-t.create_tree()
+# instanciate
+t = DecisionTree(3, "a|b'")
+# print the created the decisiontable created while instanciating
+print(t.decision_table)
+# print the results calculated from the decisiontable and function
+print(t.result)
+# print tree to stdout
+t.print_tree()
+# save tree to specified file
+t.save_tree("test.txt")
