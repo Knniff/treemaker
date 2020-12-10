@@ -2,6 +2,20 @@
 
 This python program creates a binary decision tree when given the tree-depth and a function.
 
+> example:
+
+```
+t = DecisionTree(3, "a|b'*c")
+t.print_tree()
+        ______1______
+       /             \
+    __2__           __2__
+   /     \         /     \
+  3       3       3       3
+ / \     / \     / \     / \
+1   1   1   1   0   0   1   0
+```
+
 The function has to be written in this style:
 
 > ## operators

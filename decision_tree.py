@@ -89,8 +89,8 @@ class DecisionTree:
         self.result = arr
 
 
-# instanciate
-t = DecisionTree(3, "a|b'")
+# instaniate
+t = DecisionTree(3, "a|b'*c")
 # print the created the decisiontable created while instanciating
 print(t.decision_table)
 # print the results calculated from the decisiontable and function
