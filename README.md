@@ -28,4 +28,4 @@ The function has to be written in this style:
 >
 > > example: "(a|b')\*(c'+a&a)"
 
-uses pythons eval()-function, which can be dangerous with unchecked input. There is no sanitation of the input before executed in eval()!
+uses pythons eval()-function, which can be dangerous with unchecked input. The input is checked before execution in eval() and throws an Exception if check fails.
