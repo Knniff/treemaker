@@ -1,6 +1,6 @@
 import numpy as np
 from binarytree import build
-import re
+import regex
 
 
 class DecisionTree:
@@ -48,13 +48,15 @@ class DecisionTree:
     # prepares the given function for eval()
     def create_function(self, function):
         # checks function for forbidden combinations or operators
-        if (bool(re.match(r"^[a-z()'+|*&]+$", function))) & (
-            not bool(re.search(r"([a-z]){2,}", function))
+        if (bool(regex.match(r"^[a-z()'+|*&]+$", function))) & (
+            not bool(regex.search(r"([a-z]){2,}", function))
         ):
             dic = {x: chr(x + 97) for x in range(0, 26)}
             for item in dic:
                 function = function.replace(dic[item], "INPUT[" + str(item) + "]")
-            function = re.sub("(INPUT\[[0-9]\]')", "self.n(\\1)", function)
+            function = regex.sub(r"(INPUT\[[0-9]\]')", "self.n(\\1)", function)
+            while regex.findall(r"((\((INPUT\[[0-9]\]|(?2)|(?0))([\*&|+]((INPUT\[[0-9]\])|(?2)|(?0)))*\))')", function):
+                function = regex.sub(r"((\((INPUT\[[0-9]\]|(?2)|(?0))([\*&|+]((INPUT\[[0-9]\])|(?2)|(?0)))*\))')", "self.n(\\2)", function)
             function = function.replace("'", "").replace("+", " | ").replace("*", " & ")
             self.function = function
         else:
@@ -98,7 +100,7 @@ class DecisionTree:
 
 
 # instantiate
-t = DecisionTree(3, "a|b'*c")
+t = DecisionTree(3, "((a*b)'*a|b)'*c")
 # print the created the decisiontable created while instanciating
 print(t.decision_table)
 # print the results calculated from the decisiontable and function
