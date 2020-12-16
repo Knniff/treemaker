@@ -36,4 +36,7 @@ uses pythons eval()-function, which can be dangerous with unchecked input. The i
 
 ## used packages
 
-- numpy, binarytree, re
+- numpy, binarytree, regex
+
+## codestyle
+- formatted with black
