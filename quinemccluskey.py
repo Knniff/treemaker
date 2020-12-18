@@ -5,7 +5,15 @@ import pandas as pd
 class Data:
     df = pd.DataFrame()
 
-    def __init__(self, decision_table, results) -> None:
+    def __init__(self, df=None) -> None:
+        self.df = df
+
+    @classmethod
+    def set_df(cls, df):
+        return cls(df)
+
+    @classmethod
+    def create_def(cls, decision_table, results):
         index = 0
         decimal_names = []
         weighted_groups = []
@@ -28,7 +36,7 @@ class Data:
             "results": results,
             "is_prime": is_prime,
         }
-        self.df = pd.DataFrame(
+        df = pd.DataFrame(
             data,
             columns=[
                 "decimal_names",
@@ -38,7 +46,7 @@ class Data:
                 "is_prime",
             ],
         )
-        self.df = self.df.set_index("decimal_names")
+        return cls(df.set_index("decimal_names"))
 
 
 class QuineMcCluskey:
@@ -46,22 +54,29 @@ class QuineMcCluskey:
     steps = []
 
     def __init__(self, decision_table, results) -> None:
-        self.steps.append(Data(decision_table, results))
+        self.steps.append(Data.create_def(decision_table, results))
+        self.steps.append(Data.set_df(self.get_monomial(self.steps[0].df)))
 
     def hamming_distance(s1, s2):
         # Calculate the Hamming distance between two bit strings
         assert len(s1) == len(s2)
         return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
-    def get_monomial(self):
-        # get the decision_table with only 1s as output
+    def get_monomial(self, df):
+        """self.steps.append(copy.deepcopy(self.steps[0]))
         step1 = self.steps[0].df
-        print(step1)
-        return step1[step1.results.gt(0)]
+        step2 = step1[step1.results.gt(0)]
+        self.steps[1].set_df(step2)"""
+        """ step1 = self.steps[0].df
+        step1[step1.results.gt(0)]
+        self.steps[0].set_df() """
+
+        # get the decision_table with only 1s as output
+        return df[df.results.gt(0)]
 
     def summarize_monomials(self):
         # combine monomials from neighboring groups
-        pass
+        return dict(iter(self.steps[1].df.groupby("weighted_groups")))
 
     def primeimplicant_table(self):
         # make prime implicant table
@@ -81,4 +96,11 @@ qmc = QuineMcCluskey(
     ],
     [0, 0, 0, 1, 0, 1, 2, 1],
 )
-print(qmc.get_monomial())
+
+test = qmc.summarize_monomials()
+
+for key in test:
+    try:
+        print(test[key + 1])
+    except:
+        pass
