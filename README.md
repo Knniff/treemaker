@@ -32,6 +32,8 @@ uses pythons eval()-function, which can be dangerous with unchecked input. The i
 
 ## roadmap
 
+- implement a table maker for any function
+- implement implication and aquivalency conversion
 - implement quine-mccluskey algorithm
 
 ## used packages
