@@ -33,10 +33,12 @@ uses pythons eval()-function, which can be dangerous with unchecked input. The i
 ## roadmap
 
 - implement quine-mccluskey algorithm
+- generate KNF and DNF
 
 ## used packages
 
 - numpy, binarytree, regex
 
 ## codestyle
+
 - formatted with black

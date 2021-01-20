@@ -101,6 +101,9 @@ test = qmc.summarize_monomials()
 
 for key in test:
     try:
+        for index in test:
+            pass
+        print(test[key - 1])
         print(test[key + 1])
     except:
         pass

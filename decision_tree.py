@@ -107,7 +107,7 @@ class DecisionTree:
 
 
 # instantiate
-t = DecisionTree(3, "((a*b)'*a|b)'*c")
+t = DecisionTree(5, "((a*b)'*a|b)'*c")
 # print the created the decisiontable created while instanciating
 print(t.decision_table)
 # print the results calculated from the decisiontable and function
